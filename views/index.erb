@@ -1,0 +1,44 @@
+<html>
+  <body>
+    <h1>Hallo Welt!</h1>
+    <div id="box" style="height:400px; width:500px; border:solid;">
+    	
+   	</div>
+   	<input id="name" type="text"></input>
+   	<input id="string" type="text"></input>
+   	<button onclick="SendString(event)">send</button>
+  </body>
+  <script>
+  	var connection = new WebSocket('ws:' + self.location.hostname + ':8080');
+  	
+  	// When the connection is open, send some data to the server
+	connection.onopen = function () {
+	  //connection.send('Ping');
+	};
+	
+	// Log errors
+	connection.onerror = function (error) {
+	  console.log('WebSocket Error ' + error);
+	};
+	
+	// Log messages from the server
+	connection.onmessage = function (e) {
+	  console.log('Server: ' + e.data);
+	  document.getElementById("box").innerHTML += e.data + "<br>";
+	};
+	
+	function SendString(ev){
+		connection.send(document.getElementById("name").value + ": " + document.getElementById("string").value);
+		document.getElementById("string").value = "";
+	}
+	
+	function InputCheck(event){
+		if(event.keyCode == 13){
+		    SendString(event);
+		}
+	}
+	
+	window.addEventListener('keydown', InputCheck,true);
+	  	
+  </script>
+</html>
